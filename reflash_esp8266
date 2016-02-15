@@ -1,0 +1,21 @@
+#!/bin/bash
+#
+# reflash esp8266 boards
+#
+doflash() {
+    while true; do
+        echo Flashing $2
+        ./esptool.py -b 460800 write_flash -ff 40m -fm qio -fs 8m $1 "bin/$2"
+        if [ $? -eq 0 ]; then
+            break
+        fi
+        sleep 1
+    done
+    read -t 2 -p "Enter to continue: "
+}
+
+doflash "0x00000" "boot_v1.2.bin"
+doflash "0x7e000" "blank.bin"
+doflash "0xfe000" "blank.bin"
+doflash "0xfc000" "esp_init_data_default.bin"
+doflash "0x01000" "user1.1024.new.2.bin"
